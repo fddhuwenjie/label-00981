@@ -1,0 +1,33 @@
+{
+  "name": "tres-showcase",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@tresjs/cientos": "5.2.0",
+    "@tresjs/core": "5.2.0",
+    "cannon-es": "^0.20.0",
+    "element-plus": "2.9.1",
+    "three": "^0.181.2",
+    "vue": "3.5.17",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.174.0",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "sass": "^1.83.4",
+    "terser": "^5.46.0",
+    "typescript": "~5.6.0",
+    "unplugin-auto-import": "^0.18.6",
+    "unplugin-vue-components": "^0.27.5",
+    "vite": "^5.4.11",
+    "vue-tsc": "^2.2.0"
+  }
+}

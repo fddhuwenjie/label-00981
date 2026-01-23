@@ -1,93 +1,272 @@
-# label-00981
+# Tres.js 高级示例展示平台
 
+一个基于 Vue 3 + Element Plus + Tres.js 的 3D 可视化展示平台，包含 10+ 个高级 Tres.js 示例。
 
+---
 
-## Getting started
+## How to Run
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### 本地开发运行
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+```bash
+# 1. 进入前端项目目录
+cd frontend-admin
 
-## Add your files
+# 2. 安装依赖
+npm install
 
-* [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+# 3. 启动开发服务器
+npm run dev
+
+# 4. 访问 http://localhost:8081
+```
+
+### Docker 运行
+
+**重要提示：** 如果遇到镜像拉取失败（`content size of zero` 错误），请先配置 Docker 镜像源：
+
+1. **配置 Docker Desktop 镜像源**（推荐）：
+   - 打开 Docker Desktop
+   - 进入 `Settings` -> `Docker Engine`
+   - 添加以下配置：
+   ```json
+   {
+     "registry-mirrors": [
+       "https://docker.m.daocloud.io",
+       "https://hub-mirror.c.163.com",
+       "https://mirror.baidubce.com"
+     ]
+   }
+   ```
+   - 点击 `Apply & Restart` 重启 Docker Desktop
+
+2. **或者使用命令行配置**：
+   ```powershell
+   # 清理构建缓存
+   docker builder prune -a -f
+   
+   # 禁用 BuildKit（如果仍有问题）
+   $env:DOCKER_BUILDKIT=0
+   docker-compose up -d --build
+   ```
+
+3. **构建并启动容器**：
+   ```bash
+   docker-compose up -d --build
+   ```
+
+4. **访问应用**：
+   - 访问 http://localhost:8081
+
+5. **停止容器**：
+   ```bash
+   docker-compose down
+   ```
+
+### 生产构建
+
+```bash
+cd frontend-admin
+npm run build
+```
+
+---
+
+## Services
+
+| 服务名称 | 端口 | 描述 |
+|---------|------|------|
+| frontend-admin | 8081 | Tres.js 3D 展示前端服务 |
+
+### 技术栈
+
+- **前端框架**: Vue 3.5.17
+- **UI 组件库**: Element Plus
+- **3D 渲染**: Tres.js 5.2.0 + Three.js 0.181.2
+- **构建工具**: Vite 6.x
+- **编程语言**: TypeScript
+- **容器化**: Docker + Nginx
+
+---
+
+## 测试账号
+
+本项目为纯前端展示项目，无需登录账号。直接访问即可体验所有功能。
+
+| 角色 | 账号 | 密码 | 说明 |
+|------|------|------|------|
+| 访客 | - | - | 无需登录，直接访问 |
+
+---
+
+## 题目内容
+
+### 项目需求
+
+基于以下版本创建一个完整的前端 Vite 项目，展示 Tres.js 的高级用法：
+
+- `@tresjs/core`: 5.2.0
+- `@tresjs/cientos`: 5.2.0  
+- `three`: ^0.181.2
+- `vue`: 3.5.17
+
+### 包含示例
+
+本项目包含 **10 个** Tres.js 高级用法示例：
+
+1. **基础场景 (Basic Scene)**
+   - 创建基本的 3D 场景
+   - 几何体、材质、灯光配置
+   - 相机和控制器设置
+
+2. **动画模型 (Animated Models)**
+   - 使用 useRenderLoop 实现帧动画
+   - 旋转、缩放、位移变换
+   - 弹跳和脉动效果
+
+3. **着色器材质 (Shader Material)**
+   - 自定义 GLSL 着色器
+   - 渐变和波浪效果
+   - Uniform 参数控制
+
+4. **粒子系统 (Particle System)**
+   - 大规模粒子渲染
+   - 星空和螺旋效果
+   - Points 和 BufferGeometry
+
+5. **环境贴图 (Environment Map)**
+   - HDRI 环境贴图
+   - 真实金属和玻璃反射
+   - 多种环境预设
+
+6. **后处理效果 (Post Processing)**
+   - 辉光 (Bloom) 效果
+   - 暗角 (Vignette) 效果
+   - 色彩校正
+
+7. **物理世界 (Physics World)**
+   - 重力和碰撞模拟
+   - 弹性和摩擦力
+   - 动态添加物体
+
+8. **实例化渲染 (Instanced Mesh)**
+   - 高性能批量渲染
+   - 多种排列模式
+   - 波浪动画效果
+
+9. **3D 文字 (Text Geometry)**
+   - 立体文字效果
+   - 自定义文字内容
+   - 材质和动画
+
+10. **相机控制 (Camera Controls)**
+    - 轨道控制器
+    - 多种视角预设
+    - 相机参数调节
+
+### 项目特点
+
+- ✅ 完整的 Vue 3 + TypeScript 项目结构
+- ✅ Element Plus UI 组件库集成
+- ✅ 响应式设计，支持多种屏幕尺寸
+- ✅ 深色主题，现代化 UI 设计
+- ✅ Docker 容器化部署支持
+- ✅ 跨平台镜像 (ARM64 + X86_64)
+
+---
+
+## 项目结构
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.jzxhnh.com/prompt2repo/label-00981.git
-git branch -M main
-git push -uf origin main
+label-00981/
+├── README.md                 # 项目说明文档
+├── docker-compose.yml        # Docker 编排配置
+├── .gitignore               # Git 忽略配置
+└── frontend-admin/          # 前端项目目录
+    ├── Dockerfile           # Docker 构建配置
+    ├── nginx.conf           # Nginx 配置
+    ├── package.json         # 项目依赖
+    ├── vite.config.ts       # Vite 配置
+    ├── tsconfig.json        # TypeScript 配置
+    ├── index.html           # 入口 HTML
+    ├── public/              # 静态资源
+    │   └── favicon.svg
+    └── src/                 # 源代码
+        ├── main.ts          # 入口文件
+        ├── App.vue          # 根组件
+        ├── router/          # 路由配置
+        │   └── index.ts
+        ├── views/           # 页面组件
+        │   ├── Home.vue
+        │   └── examples/    # 10 个示例页面
+        │       ├── BasicScene.vue
+        │       ├── AnimatedModels.vue
+        │       ├── ShaderMaterial.vue
+        │       ├── ParticleSystem.vue
+        │       ├── EnvironmentMap.vue
+        │       ├── PostProcessing.vue
+        │       ├── PhysicsWorld.vue
+        │       ├── InstancedMesh.vue
+        │       ├── TextGeometry.vue
+        │       └── CameraControls.vue
+        ├── components/      # 组件
+        │   └── layout/
+        │       ├── AppHeader.vue
+        │       └── AppSidebar.vue
+        └── styles/          # 样式
+            └── global.scss
 ```
 
-## Integrate with your tools
+---
 
-* [Set up project integrations](https://gitlab.jzxhnh.com/prompt2repo/label-00981/-/settings/integrations)
+## 开发说明
 
-## Collaborate with your team
+### 环境要求
 
-* [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+- Node.js >= 18.x
+- npm >= 9.x
+- Docker >= 20.x (可选)
 
-## Test and Deploy
+### 常用命令
 
-Use the built-in continuous integration in GitLab.
+```bash
+# 安装依赖
+npm install
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+# 开发模式
+npm run dev
 
-***
+# 生产构建
+npm run build
 
-# Editing this README
+# 预览构建结果
+npm run preview
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+# 代码检查
+npm run lint
+```
 
-## Suggestions for a good README
+### Docker 命令
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```bash
+# 构建镜像
+docker-compose build
 
-## Name
-Choose a self-explaining name for your project.
+# 启动服务
+docker-compose up -d
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+# 查看日志
+docker-compose logs -f
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+# 停止服务
+docker-compose down
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+# 重新构建并启动
+docker-compose up -d --build
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+---
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+## 许可证
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+MIT License
