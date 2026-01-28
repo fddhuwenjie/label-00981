@@ -12,7 +12,7 @@
     </div>
     
     <div class="canvas-container">
-      <TresCanvas shadows ref="canvasRef">
+      <TresCanvas shadows>
         <TresPerspectiveCamera :position="[6, 4, 6]" :look-at="[0, 0, 0]" />
         <OrbitControls :enable-damping="true" />
         
@@ -77,6 +77,24 @@
         />
         
         <TresAmbientLight :intensity="ambientIntensity" />
+        
+        <!-- 后处理效果 -->
+        <Suspense>
+          <EffectComposerPmndrs>
+            <BloomPmndrs
+              v-if="bloomEnabled"
+              :intensity="bloomIntensity"
+              :luminance-threshold="0.2"
+              :luminance-smoothing="0.9"
+            />
+            <VignettePmndrs
+              v-if="vignetteEnabled"
+              :darkness="vignetteIntensity"
+              :offset="vignetteIntensity * 0.5"
+            />
+            <HueSaturationPmndrs :saturation="saturationValue" />
+          </EffectComposerPmndrs>
+        </Suspense>
       </TresCanvas>
     </div>
     
@@ -152,18 +170,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { TresCanvas } from '@tresjs/core'
 import { OrbitControls } from '@tresjs/cientos'
+import { EffectComposerPmndrs, BloomPmndrs, VignettePmndrs, HueSaturationPmndrs } from '@tresjs/post-processing'
 import { PictureFilled, Setting } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import * as THREE from 'three'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
-import { VignetteShader } from 'three/examples/jsm/shaders/VignetteShader.js'
-import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
 
 interface GlowingSphere {
   position: [number, number, number]
@@ -179,7 +191,6 @@ interface OrbitingOrb {
   speed: number
 }
 
-const canvasRef = ref()
 const bloomEnabled = ref(true)
 const bloomIntensity = ref(1.5)
 const vignetteEnabled = ref(true)
@@ -189,6 +200,9 @@ const lightIntensity = ref(1.0)
 const ambientIntensity = ref(0.2)
 const saturation = ref(1.2)
 const wireframeMode = ref(false)
+
+// 将 UI 的 0~2 映射到 shader 的 -1~1
+const saturationValue = computed(() => saturation.value - 1)
 
 const centerRotation = ref<[number, number, number]>([0, 0, 0])
 
@@ -204,11 +218,6 @@ const orbitingOrbs = ref<OrbitingOrb[]>([])
 
 let animationId: number
 let time = 0
-let composer: EffectComposer | null = null
-let renderPass: RenderPass | null = null
-let bloomPass: UnrealBloomPass | null = null
-let vignettePass: ShaderPass | null = null
-let outputPass: OutputPass | null = null
 
 // 创建环绕小球
 for (let i = 0; i < 8; i++) {
@@ -221,49 +230,7 @@ for (let i = 0; i < 8; i++) {
   })
 }
 
-const initPostProcessing = (renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera) => {
-  // 创建后处理合成器
-  composer = new EffectComposer(renderer)
-  
-  // 渲染通道
-  renderPass = new RenderPass(scene, camera)
-  composer.addPass(renderPass)
-  
-  // Bloom 通道 (UnrealBloomPass)
-  const size = new THREE.Vector2(
-    renderer.domElement.width,
-    renderer.domElement.height
-  )
-  bloomPass = new UnrealBloomPass(size, bloomIntensity.value, 0.4, 0.85)
-  composer.addPass(bloomPass)
-  
-  // Vignette 通道
-  vignettePass = new ShaderPass(VignetteShader)
-  vignettePass.uniforms.offset.value = vignetteIntensity.value
-  vignettePass.uniforms.darkness.value = vignetteIntensity.value
-  composer.addPass(vignettePass)
-  
-  // 输出通道
-  outputPass = new OutputPass()
-  outputPass.renderToScreen = true
-  composer.addPass(outputPass)
-}
-
-onMounted(async () => {
-  // 等待下一帧确保canvas已初始化
-  await new Promise(resolve => setTimeout(resolve, 200))
-  
-  // 通过 canvasRef 获取 TresCanvas 的上下文
-  if (canvasRef.value) {
-    const context = canvasRef.value.context
-    if (context) {
-      const { renderer, scene, camera } = context
-      if (renderer?.value && scene?.value && camera?.value) {
-        initPostProcessing(renderer.value, scene.value, camera.value)
-      }
-    }
-  }
-  
+onMounted(() => {
   const animate = () => {
     time += 0.016
     centerRotation.value = [time * 0.2, time * 0.3, time * 0.1]
@@ -278,21 +245,6 @@ onMounted(async () => {
       ]
     })
     
-    // 更新后处理效果
-    if (composer) {
-      if (bloomPass) {
-        bloomPass.enabled = bloomEnabled.value
-        bloomPass.strength = bloomEnabled.value ? bloomIntensity.value : 0
-      }
-      if (vignettePass) {
-        vignettePass.enabled = vignetteEnabled.value
-        vignettePass.uniforms.offset.value = vignetteIntensity.value
-        vignettePass.uniforms.darkness.value = vignetteIntensity.value
-      }
-      
-      composer.render()
-    }
-    
     animationId = requestAnimationFrame(animate)
   }
   animate()
@@ -300,21 +252,6 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (animationId) cancelAnimationFrame(animationId)
-  if (composer) {
-    composer.dispose()
-  }
-})
-
-watch(bloomEnabled, (enabled) => {
-  if (bloomPass) {
-    bloomPass.enabled = enabled
-  }
-})
-
-watch(vignetteEnabled, (enabled) => {
-  if (vignettePass) {
-    vignettePass.enabled = enabled
-  }
 })
 
 const applyPreset = (preset: string) => {

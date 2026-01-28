@@ -139,12 +139,12 @@ import { Sunny, Setting } from '@element-plus/icons-vue'
 import CanvasLoading from '@/components/common/CanvasLoading.vue'
 import CustomSelect from '@/components/common/CustomSelect.vue'
 
-const presets = ['sunset', 'dawn', 'night', 'forest', 'studio', 'city'] as const
+const presets = ['sunset', 'dawn', 'night', 'snow', 'studio', 'city'] as const
 const presetLabels: Record<string, string> = {
   sunset: '日落',
   dawn: '黎明',
   night: '夜晚',
-  forest: '森林',
+  snow: '森林',
   studio: '工作室',
   city: '城市'
 }
@@ -156,7 +156,7 @@ const presetOptions = computed(() => {
   }))
 })
 
-const selectedPreset = ref<'sunset' | 'dawn' | 'night' | 'forest' | 'studio' | 'city'>('sunset')
+const selectedPreset = ref<'sunset' | 'dawn' | 'night' | 'snow' | 'studio' | 'city'>('sunset')
 const sphereColor = ref('#6366f1')
 const metalness = ref(0.9)
 const roughness = ref(0.1)
