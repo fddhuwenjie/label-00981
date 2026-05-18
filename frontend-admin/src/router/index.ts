@@ -66,6 +66,12 @@ const routes: RouteRecordRaw[] = [
     name: 'CameraControls',
     component: () => import('@/views/examples/CameraControls.vue'),
     meta: { title: '相机控制', icon: 'Camera' }
+  },
+  {
+    path: '/terrain-generator',
+    name: 'TerrainGenerator',
+    component: () => import('@/views/examples/TerrainGenerator.vue'),
+    meta: { title: '地形生成器', icon: 'Cpu' }
   }
 ]
 
